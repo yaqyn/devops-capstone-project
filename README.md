@@ -1,81 +1,32 @@
-# DevOps Capstone Template
+# DevOps Capstone Project
 
+[![CI Build](https://github.com/yaqyn/devops-capstone-project/actions/workflows/ci-build.yaml/badge.svg)](https://github.com/yaqyn/devops-capstone-project/actions/workflows/ci-build.yaml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.9](https://img.shields.io/badge/Python-3.9-green.svg)](https://shields.io/)
 
-This repository contains the starter code for the project in [**IBM-CD0285EN-SkillsNetwork DevOps Capstone Project**](https://www.coursera.org/learn/devops-capstone-project?specialization=devops-and-software-engineering) which is part of the [**IBM DevOps and Software Engineering Professional Certificate**](https://www.coursera.org/professional-certificates/devops-and-software-engineering)
+## Project Name
 
-## Usage
+**devops-capstone-project**
 
-You should use this template to start your DevOps Capstone project. It contains all of the code that you will need to get started.
+This repository contains the DevOps Capstone Project: a **Customer Accounts
+Microservice** for an e-commerce website, built with Python, Flask, SQLAlchemy
+and PostgreSQL. The service exposes a well-formed REST API that other
+microservices can call to create, read, update, delete and list customer
+accounts. It is containerized with Docker, deployed to Kubernetes/OpenShift
+and delivered through an automated CI/CD pipeline built with GitHub Actions
+and Tekton.
 
-Do Not fork this code! It is meant to be used by pressing the  <span style=color:white;background:green>**Use this Template**</span> button in GitHub. This will copy the code to your own repository with no connection back to the original repository like a fork would. This is what you want.
+## REST API
 
-## Development Environment
-
-These labs are designed to be executed in the IBM Developer Skills Network Cloud IDE with OpenShift. Please use the links provided in the Coursera Capstone project to access the lab environment.
-
-Once you are in the lab environment, you can initialize it with `bin/setup.sh` by sourcing it. (*Note: DO NOT run this program as a bash script. It sets environment variable and so must be sourced*):
-
-```bash
-source bin/setup.sh
-```
-
-This will install Python 3.9, make it the default, modify the bash prompt, create a Python virtual environment and activate it.
-
-After sourcing it you prompt should look like this:
-
-```bash
-(venv) theia:project$
-```
-
-## Useful commands
-
-Under normal circumstances you should not have to run these commands. They are performed automatically at setup but may be useful when things go wrong:
-
-### Activate the Python 3.9 virtual environment
-
-You can activate the Python 3.9 environment with:
-
-```bash
-source ~/venv/bin/activate
-```
-
-### Installing Python dependencies
-
-These dependencies are installed as part of the setup process but should you need to install them again, first make sure that the Python 3.9 virtual environment is activated and then use the `make install` command:
-
-```bash
-make install
-```
-
-### Starting the Postgres Docker container
-
-The labs use Postgres running in a Docker container. If for some reason the service is not available you can start it with:
-
-```bash
-make db
-```
-
-You can use the `docker ps` command to make sure that postgres is up and running.
-
-## Project layout
-
-The code for the microservice is contained in the `service` package. All of the test are in the `tests` folder. The code follows the **Model-View-Controller** pattern with all of the database code and business logic in the model (`models.py`), and all of the RESTful routing on the controller (`routes.py`).
-
-```text
-├── service         <- microservice package
-│   ├── common/     <- common log and error handlers
-│   ├── config.py   <- Flask configuration object
-│   ├── models.py   <- code for the persistent model
-│   └── routes.py   <- code for the REST API routes
-├── setup.cfg       <- tools setup config
-└── tests                       <- folder for all of the tests
-    ├── factories.py            <- test factories
-    ├── test_cli_commands.py    <- CLI tests
-    ├── test_models.py          <- model unit tests
-    └── test_routes.py          <- route unit tests
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Service health check |
+| GET | `/` | Service index |
+| POST | `/accounts` | Create a new account |
+| GET | `/accounts` | List all accounts |
+| GET | `/accounts/{id}` | Read an account |
+| PUT | `/accounts/{id}` | Update an account |
+| DELETE | `/accounts/{id}` | Delete an account |
 
 ## Data Model
 
@@ -83,51 +34,51 @@ The Account model contains the following fields:
 
 | Name | Type | Optional |
 |------|------|----------|
-| id | Integer| False |
+| id | Integer | False |
 | name | String(64) | False |
 | email | String(64) | False |
 | address | String(256) | False |
 | phone_number | String(32) | True |
 | date_joined | Date | False |
 
-## Your Task
+## Development
 
-Complete this microservice by implementing REST API's for `READ`, `UPDATE`, `DELETE`, and `LIST` while maintaining **95%** code coverage. In true **Test Driven Development** fashion, first write tests for the code you "wish you had", and then write the code to make them pass.
+```bash
+source ~/venv/bin/activate
+make install   # install dependencies
+make db        # start PostgreSQL in Docker
+make tests     # run nosetests with coverage
+make run       # run the service locally
+make lint      # run flake8
+```
 
-## Local Kubernetes Development
+The code follows the **Model-View-Controller** pattern with all of the
+database code and business logic in the model (`models.py`) and all of the
+RESTful routing in the controller (`routes.py`).
 
-This repo can also be used for local Kubernetes development. It is not advised that you run these commands in the Cloud IDE environment. The purpose of these commands are to simulate the Cloud IDE environment locally on your computer. 
+## Continuous Integration and Delivery
 
-At a minimum, you will need [Docker Desktop](https://www.docker.com/products/docker-desktop) installed on your computer. For the full development environment, you will also need [Visual Studio Code](https://code.visualstudio.com) with the [Remote Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension from the Visual Studio Marketplace. All of these can be installed manually by clicking on the links above or you can use a package manager like **Homebrew** on Mac of **Chocolatey** on Windows.
+- **CI:** GitHub Actions runs flake8 linting and the `nosetests` unit test
+  suite on every push and pull request (`.github/workflows/ci-build.yaml`).
+- **Security:** Flask-Talisman adds secure HTTP headers and Flask-Cors
+  enforces Cross-Origin Resource Sharing policies.
+- **Container:** the `Dockerfile` builds a non-root `python:3.9-slim` image
+  served by gunicorn on port 8080.
+- **CD:** Tekton `cd-pipeline` clones, lints, tests, builds and deploys the
+  service to Kubernetes/OpenShift (`tekton/`).
 
-Please only use these commands for working stand-alone on your own computer with the VSCode Remote Container environment provided.
+## Kubernetes
 
-1. Bring up a local K3D Kubernetes cluster
-
-    ```bash
-    $ make cluster
-    ```
-
-2. Install Tekton
-
-    ```bash
-    $ make tekton
-    ```
-
-3. Install the ClusterTasks that the Cloud IDE has
-
-    ```bash
-    $ make clustertasks
-    ```
-
-You can now perform Tekton development locally, just like in the Cloud IDE lab environment.
+```bash
+kubectl apply -f deploy/postgres.yaml
+kubectl apply -f deploy/accounts.yaml
+kubectl get all
+```
 
 ## Author
 
-[John Rofrano](https://www.coursera.org/instructor/johnrofrano), Senior Technical Staff Member, DevOps Champion, @ IBM Research, and Instructor @ Coursera
+IBM DevOps and Software Engineering Capstone Project.
 
 ## License
 
 Licensed under the Apache License. See [LICENSE](LICENSE)
-
-## <h3 align="center"> © IBM Corporation 2022. All rights reserved. <h3/>
