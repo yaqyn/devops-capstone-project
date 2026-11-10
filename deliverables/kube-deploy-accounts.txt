@@ -1,0 +1,16 @@
+NAME                            READY   STATUS    RESTARTS   AGE     IP             NODE       NOMINATED NODE   READINESS GATES
+pod/accounts-7cc9867648-v7pg7   1/1     Running   0          84s     10.244.1.0     minikube   <none>           <none>
+pod/postgres-7c8549989b-5xlhm   1/1     Running   0          2m39s   10.244.0.254   minikube   <none>           <none>
+
+NAME               TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+service/accounts   ClusterIP   10.110.16.202   <none>        8080/TCP   26h   app=accounts
+service/postgres   ClusterIP   10.104.103.73   <none>        5432/TCP   26h   app=postgres
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES            SELECTOR
+deployment.apps/accounts   1/1     1            1           26h   accounts     accounts:1.0      app=accounts
+deployment.apps/postgres   1/1     1            1           26h   postgres     postgres:alpine   app=postgres
+
+NAME                                  DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES            SELECTOR
+replicaset.apps/accounts-7cc9867648   1         1         1       84s   accounts     accounts:1.0      app=accounts,pod-template-hash=7cc9867648
+replicaset.apps/accounts-86749f5899   0         0         0       26h   accounts     accounts:1.0      app=accounts,pod-template-hash=86749f5899
+replicaset.apps/postgres-7c8549989b   1         1         1       26h   postgres     postgres:alpine   app=postgres,pod-template-hash=7c8549989b

@@ -1,0 +1,11 @@
+$ curl -s http://localhost:8080/accounts/1 | python -m json.tool
+
+{
+    "address": "123 Main Street, Springfield",
+    "date_joined": "2026-11-09",
+    "email": "john.doe@example.com",
+    "id": 1,
+    "name": "John Doe",
+    "phone_number": "555-123-4567"
+}
+
