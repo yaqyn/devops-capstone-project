@@ -93,7 +93,7 @@ spec:
         sed -i "s|image: accounts:1.0|image: $(params.image)|" deploy/accounts.yaml
         cat deploy/accounts.yaml
     - name: apply
-      image: quay.io/openshift/origin-cli:latest
+      image: bitnami/kubectl:latest
       workingDir: $(workspaces.source.path)
       script: |
         #!/usr/bin/env bash
